@@ -40,3 +40,6 @@ htmlcov/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Local tool configuration
+.claude/

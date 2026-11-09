@@ -1,0 +1,114 @@
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --text: #1c2430;
+  --muted: #5b6676;
+  --border: #dde2e9;
+  --accent: #1f5fbf;
+  --typical: #2f8f5b;
+  --elevated: #c98a12;
+  --high: #c0392b;
+  --warn-bg: #fff6e0;
+  --warn-border: #f0d18a;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12161c;
+    --surface: #1b212a;
+    --text: #e6ebf1;
+    --muted: #9aa6b5;
+    --border: #2c3542;
+    --accent: #6ea4ff;
+    --warn-bg: #2b2414;
+    --warn-border: #6b5521;
+  }
+}
+
+* { box-sizing: border-box; }
+/* `display: flex` etc. below would otherwise override the hidden attribute. */
+[hidden] { display: none !important; }
+body { margin: 0; line-height: 1.5; background: var(--bg); }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+
+.masthead { background: var(--surface); border-bottom: 1px solid var(--border); padding: 28px 0 20px; }
+.masthead h1 { margin: 0 0 6px; font-size: 1.6rem; }
+.lede { margin: 0; color: var(--muted); }
+
+.disclaimer {
+  margin: 20px 0; padding: 12px 14px; border-radius: 8px;
+  background: var(--warn-bg); border: 1px solid var(--warn-border); font-size: 0.92rem;
+}
+
+.search label { display: block; font-weight: 600; margin-bottom: 6px; }
+.search-row { display: flex; gap: 8px; }
+.search input {
+  flex: 1; min-width: 0; padding: 10px 12px; font-size: 1rem; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+}
+.search button {
+  padding: 10px 18px; font-size: 1rem; border: 0; border-radius: 8px;
+  background: var(--accent); color: #fff; cursor: pointer;
+}
+.hint, .meta { color: var(--muted); font-size: 0.9rem; margin: 6px 0 0; }
+.small { font-size: 0.8rem; }
+.status { min-height: 1.5em; color: var(--muted); }
+
+.results { list-style: none; padding: 0; margin: 12px 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.results li + li { border-top: 1px solid var(--border); }
+.result {
+  width: 100%; text-align: left; padding: 10px 14px; border: 0; cursor: pointer;
+  background: var(--surface); color: var(--text); display: flex; flex-direction: column;
+}
+.result:hover, .result:focus-visible { background: var(--bg); }
+.result-name { font-weight: 600; }
+.result-meta { color: var(--muted); font-size: 0.85rem; }
+
+.card {
+  margin: 16px 0 32px; padding: 20px; border-radius: 12px;
+  background: var(--surface); border: 1px solid var(--border);
+}
+.card-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.card h2 { margin: 0; font-size: 1.3rem; }
+.card h3 { font-size: 1rem; margin: 20px 0 8px; }
+.band { padding: 4px 10px; border-radius: 999px; font-size: 0.85rem; font-weight: 600; color: #fff; white-space: nowrap; }
+.band-typical { background: var(--typical); }
+.band-elevated { background: var(--elevated); }
+.band-high { background: var(--high); }
+.message { padding: 12px 14px; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); }
+
+.score { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+.gauge { position: relative; width: 200px; margin: 0; }
+.gauge svg { width: 100%; display: block; }
+.gauge-track, .gauge-fill { fill: none; stroke-width: 16; stroke-linecap: round; }
+.gauge-track { stroke: var(--border); }
+.gauge-fill { stroke: var(--typical); transition: stroke-dasharray 0.6s ease; }
+.fill-elevated { stroke: var(--elevated); }
+.fill-high { stroke: var(--high); }
+.gauge-value { position: absolute; left: 0; right: 0; top: 52px; text-align: center; }
+.gauge-value span { display: block; font-size: 2rem; font-weight: 700; line-height: 1; }
+.gauge-value small { color: var(--muted); }
+.gauge-caption { text-align: center; color: var(--muted); font-size: 0.85rem; }
+.score-text { flex: 1; min-width: 220px; }
+.probability { font-size: 1.15rem; margin: 0; }
+.probability span { font-size: 1.8rem; font-weight: 700; }
+.relative { margin: 8px 0 0; font-weight: 600; }
+
+.reasons { padding-left: 0; list-style: none; margin: 0; }
+.reason { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.reason-icon { font-size: 0.8rem; padding-top: 3px; }
+.reason-raises .reason-icon { color: var(--high); }
+.reason-lowers .reason-icon { color: var(--typical); }
+
+.warnings { margin: 16px 0 0; padding: 10px 14px 10px 30px; background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 8px; }
+.links { padding-left: 18px; margin: 0; }
+.links a { color: var(--accent); }
+.footer { color: var(--muted); font-size: 0.85rem; padding-bottom: 32px; }
+
+@media (max-width: 520px) {
+  .card-head { flex-direction: column; }
+  .score { justify-content: center; }
+}

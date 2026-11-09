@@ -417,6 +417,13 @@ def main() -> None:
                 "features": list(FEATURES),
                 "categories": categories,
                 "calibrator": platt.to_dict(),
+                # Calibrated probabilities of the validation + test filings, as percentiles:
+                # lets the API say how a company's score compares with other companies.
+                "reference_percentiles": np.quantile(
+                    np.concatenate([platt.predict(lgbm_raw["valid"]), lgbm_prob]),
+                    np.linspace(0, 1, 101),
+                ).tolist(),
+                "train_base_rate": sizes["train"][1] / sizes["train"][0],
                 "params": {**LGBM_FIXED, **best_params},
                 "split": [s.__dict__ for s in SPLITS],
                 "trained_at": datetime.now(UTC).isoformat(timespec="seconds"),

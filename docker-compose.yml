@@ -1,0 +1,17 @@
+# docker compose up  ->  http://localhost:8000
+# Needs: a trained model in ./models (uv run python -m cfp.train.train) and
+# COMPANIES_HOUSE_API_KEY in .env (copy .env.example).
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./models:/srv/models:ro
+      - api-cache:/srv/data  # cached API responses and accounts documents
+    restart: unless-stopped
+
+volumes:
+  api-cache:

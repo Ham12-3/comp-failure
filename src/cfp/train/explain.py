@@ -62,6 +62,11 @@ def format_value(name: str, value: Any) -> str:
         return f"£{value:,.0f}"
     if name in PERCENT_CHANGES:
         return f"{value:+.0%}"
+    if "days_late" in name:  # negative lateness means filed early
+        days = round(float(value))
+        return f"{abs(days):,} days {'early' if days < 0 else 'late'}"
+    if name.endswith("_days") or name.startswith("days_"):
+        return f"{round(float(value)):,} days"
     if isinstance(value, float):
         return f"{value:,.0f}" if value.is_integer() else f"{value:,.2f}"
     return str(value)

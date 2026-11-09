@@ -7,17 +7,18 @@ authors = [{ name = "Abdulhamid Sonaike" }]
 requires-python = ">=3.12,<3.13"
 # Runtime dependencies are added phase by phase, only when code needs them.
 dependencies = [
+    "fastapi>=0.162.2",
     "httpx>=0.28.1",
     "ixbrlparse>=0.12.0",
     "lightgbm>=4.7.0",
     "lxml>=6.1.3",
     "matplotlib>=3.11.2",
-    "mlflow>=3.18.0",
     "polars>=2.1.0",
     "pydantic>=2.9",
     "pydantic-settings>=2.6",
     "scikit-learn>=1.9.1",
     "shap>=0.54.1",
+    "uvicorn[standard]>=0.54.0",
 ]
 
 [dependency-groups]
@@ -29,6 +30,13 @@ dev = [
     "ruff>=0.8",
     "types-lxml>=2026.2.16",
 ]
+train = [
+    "mlflow>=3.18.0",
+]
+
+[tool.uv]
+# `uv sync` installs training tools locally; the Docker image skips them (--no-default-groups).
+default-groups = ["dev", "train"]
 
 [build-system]
 requires = ["uv_build>=0.11.14,<0.12.0"]
@@ -86,6 +94,8 @@ filterwarnings = [
     "ignore:Call to deprecated method findChildren:DeprecationWarning",
     # shap notice about its own output format; cfp.train.explain handles both formats.
     "ignore:LightGBM binary classifier with TreeExplainer shap values output has changed:UserWarning",
+    # Starlette notice about the TestClient's own HTTP library; nothing to change on our side.
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
 ]
 
 [tool.coverage.run]

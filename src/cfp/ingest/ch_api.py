@@ -140,7 +140,9 @@ class ResponseCache:
 
     def __init__(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        self._conn = sqlite3.connect(path)
+        # The API server shares one client across worker threads, serialised by a lock
+        # (cfp.serve.live), so the connection may be used from a thread other than its creator.
+        self._conn = sqlite3.connect(path, check_same_thread=False)
         self._conn.execute(
             "CREATE TABLE IF NOT EXISTS responses ("
             " key TEXT PRIMARY KEY,"
@@ -337,6 +339,14 @@ class CompaniesHouseClient:
     def filing_history(self, company_number: str) -> list[Json]:
         return self.paginate(f"/company/{normalise_company_number(company_number)}/filing-history")
 
+    def recent_filings(self, company_number: str, category: str, count: int = 25) -> list[Json]:
+        """The newest `count` filings in one category: a single request, unlike filing_history."""
+        number = normalise_company_number(company_number)
+        page = self.get(
+            f"/company/{number}/filing-history", {"category": category, "items_per_page": count}
+        )
+        return list((page or {}).get("items") or [])
+
     def charges(self, company_number: str) -> list[Json]:
         return self.paginate(f"/company/{normalise_company_number(company_number)}/charges")
 
@@ -346,6 +356,31 @@ class CompaniesHouseClient:
 
     def search_companies(self, query: str, items_per_page: int = 20) -> Json | None:
         return self.get("/search/companies", {"q": query, "items_per_page": items_per_page})
+
+    # ------------------------------------------------------------- documents
+    def document_metadata(self, url: str) -> Json | None:
+        """Document API metadata (absolute URL from a filing's `links.document_metadata`)."""
+        return self.get(url)
+
+    def document_download_url(self, content_url: str, media_type: str) -> str | None:
+        """Where to download a document in `media_type` (a short-lived S3 address), or None if
+        that format does not exist. The API answers with a redirect; it is *not* followed here,
+        so the API key is never sent to the storage host."""
+        if self.cache_only:
+            raise CacheMissError(content_url)
+        self._bucket.acquire()
+        self.requests_made += 1
+        response = self._http.get(
+            content_url, headers={"Accept": media_type}, follow_redirects=False
+        )
+        if response.is_redirect:
+            location = response.headers.get("location")
+            return str(location) if location else None
+        if response.status_code in (404, 406):
+            return None
+        if response.status_code in (401, 403):
+            raise AuthenticationError(f"HTTP {response.status_code} for document {content_url}")
+        raise CompaniesHouseError(f"Unexpected HTTP {response.status_code} for {content_url}")
 
     # ------------------------------------------------------------- lifecycle
     def close(self) -> None:

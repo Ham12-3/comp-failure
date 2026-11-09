@@ -284,6 +284,27 @@ def parse_document(data: bytes, member: str, archive: str) -> dict[str, Any]:
     return row
 
 
+def parse_live_document(
+    data: bytes, company_number: str, balance_sheet_date: date, filing_date: date, source: str
+) -> dict[str, Any]:
+    """Parse an accounts document fetched from the Document API (not from a bulk archive):
+    same output row as `parse_document`, with identifiers supplied by the caller."""
+    row = _empty_row()
+    row.update(
+        company_number=company_number,
+        balance_sheet_date=balance_sheet_date,
+        filing_month=filing_date.replace(day=1),
+        source_archive="document-api",
+        source_member=source,
+        file_type="html",
+    )
+    try:
+        row.update(extract(IXBRL(io.BytesIO(data), raise_on_error=False), balance_sheet_date))
+    except Exception as exc:
+        row["parse_error"] = f"{type(exc).__name__}: {exc}"[:300]
+    return row
+
+
 def _parse_chunk(zip_path: str, members: list[str]) -> list[dict[str, Any]]:
     """Worker: open the archive's local zip itself (cheaper than shipping bytes between
     processes) and parse a chunk of its members."""
