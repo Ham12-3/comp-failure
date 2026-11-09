@@ -22,6 +22,22 @@ uv run pytest -m network     # tests that call the real Companies House API
 CI (`.github/workflows/ci.yml`) runs: `uv sync --locked`, `ruff check`, `ruff format --check`,
 `mypy`, `pytest`. All four must pass before a phase is done.
 
+Pipeline steps (each is resumable and skips work already done):
+
+```bash
+uv run python -m cfp.ingest.accounts_download --dry-run   # size estimate only
+uv run python -m cfp.ingest.accounts_download             # sample accounts -> data/raw/accounts_sample/
+uv run python -m cfp.ingest.accounts_parse                # -> data/interim/accounts.parquet
+uv run python -m cfp.ingest.ch_api save-fixtures <company_number>...   # real API examples
+uv run python -m cfp.ingest.company_data                  # -> data/interim/company_snapshot.parquet
+uv run python -m cfp.ingest.fetch_companies [--limit N]   # API data for sampled companies (~14.5 h)
+uv run python -m cfp.labels.build_labels                  # cache only -> data/processed/labels.parquet
+uv run python -m cfp.features.build_features              # cache only -> data/processed/features.parquet
+```
+
+The download keeps a running byte total in `data/raw/accounts_sample/manifest.json` and refuses
+to go past `--max-gb` (default 5). Do not raise it without asking.
+
 ## How to work
 
 - **One phase at a time** (see PROJECT_SPEC.md section 10). At the end of each phase: run all
