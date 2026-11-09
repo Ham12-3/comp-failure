@@ -15,7 +15,7 @@ DISCLAIMER = (
 
 
 class PredictRequest(BaseModel):
-    company_number: str = Field(min_length=1, max_length=12, examples=["10851932"])
+    company_number: str = Field(min_length=1, max_length=12, examples=["03782379"])
 
 
 class ReasonOut(BaseModel):

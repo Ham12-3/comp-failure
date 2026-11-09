@@ -80,10 +80,16 @@ FEATURES: dict[str, tuple[str, str]] = {
     "n_numeric_facts": ("accounts", "Number of numeric facts tagged: how much was disclosed."),
     "sign_repaired": ("accounts", "A sign-tagging error was corrected in this filing."),
     "accounting_standard": ("accounts", "Micro-entities / SmallEntities / FRS102 / ..."),
-    "accounts_type": ("accounts", "Full / filleted / abridged accounts (tagged)."),
+    "accounts_type": (
+        "accounts",
+        "Full or abridged accounts (tagged; filleted counted as full, as before 2023).",
+    ),
     "accounts_status": ("accounts", "Audited or audit-exempt (tagged)."),
     "is_dormant": ("accounts", "Company declares itself dormant."),
-    "prior_period_gap_days": ("accounts", "Days between this and the prior balance sheet date."),
+    "period_length_change_months": (
+        "accounts",
+        "Months the reporting period differs from a year (0 = normal; ignores leap days).",
+    ),
     # --- filing history
     "days_late_this_filing": (
         "filing history",

@@ -135,6 +135,9 @@ def default_scorer() -> LiveScorer | None:
     except FileNotFoundError:
         logger.error("No trained model in %s: run `python -m cfp.train.train` first", model_dir)
         return None
+    except ValueError as exc:  # model and code disagree on the feature list
+        logger.error("Model in %s cannot be used: %s", model_dir, exc)
+        return None
     if settings.companies_house_api_key is None:
         logger.error("COMPANIES_HOUSE_API_KEY is not set: /predict and /search are disabled")
         return None

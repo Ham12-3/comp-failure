@@ -42,29 +42,42 @@ def test_sign_repair_leaves_consistent_filings_alone() -> None:
     assert after["sign_repaired"] is False
 
 
+def accounts_row(**values: float) -> pl.DataFrame:
+    """One parsed-accounts row: the given values, everything else missing."""
+    row = dict.fromkeys(SCHEMA)
+    row.update(values)
+    return pl.DataFrame([row], schema=SCHEMA).with_row_index("row_id")
+
+
 def test_genuinely_negative_values_stay_negative() -> None:
-    frame = pl.DataFrame(
-        {
-            "current_assets": [1_000.0],
-            "creditors_within_one_year": [3_000.0],
-            "net_current_assets": [-2_000.0],  # correctly tagged negative
-            "fixed_assets": [None],
-            "total_assets_less_current_liabilities": [-2_000.0],
-            "creditors_after_one_year": [None],
-            "provisions": [None],
-            "net_assets": [-2_000.0],
-            "equity": [-2_000.0],
-        },
-        schema_overrides={
-            "fixed_assets": pl.Float64,
-            "creditors_after_one_year": pl.Float64,
-            "provisions": pl.Float64,
-        },
+    frame = accounts_row(
+        current_assets=1_000.0,
+        creditors_within_one_year=3_000.0,
+        net_current_assets=-2_000.0,  # correctly tagged negative
+        total_assets_less_current_liabilities=-2_000.0,
+        net_assets=-2_000.0,
+        equity=-2_000.0,
     )
-    prev = frame.rename(lambda c: f"{c}_prev")
-    out = repair_signs(pl.concat([frame, prev], how="horizontal")).row(0, named=True)
+    out = repair_signs(frame).row(0, named=True)
     assert out["net_assets"] == -2_000
     assert out["sign_repaired"] is False
+
+
+def test_never_negative_balances_tagged_negative_are_made_positive() -> None:
+    """The reverse error, in about 3% of real filings: creditors shown in brackets as a
+    deduction and tagged with sign="-", even current assets and employee counts."""
+    frame = accounts_row(
+        current_assets=-1_000.0,
+        creditors_within_one_year=-3_000.0,
+        net_current_assets=-2_000.0,
+        employees=-4.0,
+        employees_prev=3.0,
+    )
+    out = repair_signs(frame).row(0, named=True)
+    assert (out["current_assets"], out["creditors_within_one_year"]) == (1_000, 3_000)
+    assert (out["employees"], out["employees_prev"]) == (4, 3)
+    assert out["net_current_assets"] == -2_000  # consistent with the corrected inputs
+    assert out["sign_repaired"] is True
 
 
 def test_features_on_the_real_filing(mis_signed: pl.DataFrame) -> None:

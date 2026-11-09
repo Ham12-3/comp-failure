@@ -4,8 +4,12 @@ Everything here comes from one filing (current year and the prior-year comparati
 in it), all of which became public on the prediction date. No other data is used.
 
 Steps:
-1. **Sign repair.** Some filings display negatives in brackets but tag them as positive (see
-   docs/DATA.md). Accounting identities say which sign is right:
+1. **Sign repair**, in two directions (see docs/DATA.md):
+   * Balances that cannot be negative (assets, cash, debtors, creditors, provisions, employees
+     ...) are sometimes tagged with a minus sign because they are *shown* in brackets as
+     deductions (about 3% of filings). They are made positive.
+   * Net figures are sometimes shown in brackets but tagged positive. Accounting identities say
+     which sign is right:
    net current assets = current assets - creditors due within one year;
    total assets less current liabilities = fixed assets + net current assets;
    net assets = total assets less current liabilities - creditors after one year - provisions.
@@ -19,6 +23,23 @@ from __future__ import annotations
 import polars as pl
 
 PERIODS = ("", "_prev")
+
+# Balances that are non-negative by definition in UK accounts. (Turnover is left alone: a
+# negative turnover is rare but possible.)
+NEVER_NEGATIVE = (
+    "current_assets",
+    "fixed_assets",
+    "cash",
+    "debtors",
+    "inventories",
+    "creditors_within_one_year",
+    "creditors_after_one_year",
+    "creditors_no_maturity",
+    "provisions",
+    "bank_borrowings_within_one_year",
+    "bank_borrowings_after_one_year",
+    "employees",
+)
 
 
 def _flip_if_closer(value: str, expected: pl.Expr) -> pl.Expr:
@@ -34,8 +55,11 @@ def repair_signs(frame: pl.DataFrame) -> pl.DataFrame:
 
     Each identity uses values repaired by the step before it, so the order matters.
     """
-    out = frame
-    flags: list[pl.Expr] = []
+    never_negative = [f"{c}{p}" for c in NEVER_NEGATIVE for p in PERIODS]
+    flags: list[pl.Expr] = [(pl.col(c) < 0).fill_null(False) for c in never_negative]
+    flagged = frame.with_columns(_any_negative=pl.any_horizontal(flags))
+    out = flagged.with_columns(pl.col(never_negative).abs())
+    flags = [pl.col("_any_negative")]
     for p in PERIODS:
         nca = f"net_current_assets{p}"
         talcl = f"total_assets_less_current_liabilities{p}"
@@ -70,7 +94,9 @@ def repair_signs(frame: pl.DataFrame) -> pl.DataFrame:
             f"equity{p}",
         )
     ]
-    return out.with_columns(sign_repaired=pl.any_horizontal(flags)).drop(originals)
+    return out.with_columns(sign_repaired=pl.any_horizontal(flags)).drop(
+        [*originals, "_any_negative"]
+    )
 
 
 def _safe_ratio(num: pl.Expr, den: pl.Expr) -> pl.Expr:
@@ -156,11 +182,15 @@ def financial_features(accounts: pl.DataFrame) -> pl.DataFrame:
         "sign_repaired",
         # report metadata tagged in the filing
         "accounting_standard",
-        "accounts_type",
+        # The 2023 taxonomy added a `FilletedAccounts` member; before that, the same accounts
+        # were tagged `FullAccounts`. Map the new member back so the category means the same
+        # thing in every year (found by the drift check, docs/DECISIONS.md 6.2).
+        pl.col("accounts_type").replace({"FilletedAccounts": "FullAccounts"}),
         "accounts_status",
         "is_dormant",
-        pl.col("period_end")
-        .sub(pl.col("prior_period_end"))
-        .dt.total_days()
-        .alias("prior_period_gap_days"),
+        # Months by which the reporting period differs from a normal year. Measured in months,
+        # not days, so leap years do not register as a change (also found by the drift check).
+        ((pl.col("period_end").sub(pl.col("prior_period_end")).dt.total_days() - 365.25) / 30.44)
+        .round(0)
+        .alias("period_length_change_months"),
     )

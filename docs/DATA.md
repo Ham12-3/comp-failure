@@ -229,10 +229,10 @@ address) makes it fail.
 | `n_numeric_facts` | accounts | Number of numeric facts tagged: how much was disclosed. |
 | `sign_repaired` | accounts | A sign-tagging error was corrected in this filing. |
 | `accounting_standard` | accounts | Micro-entities / SmallEntities / FRS102 / ... |
-| `accounts_type` | accounts | Full / filleted / abridged accounts (tagged). |
+| `accounts_type` | accounts | Full or abridged accounts (tagged; filleted counted as full, as before 2023). |
 | `accounts_status` | accounts | Audited or audit-exempt (tagged). |
 | `is_dormant` | accounts | Company declares itself dormant. |
-| `prior_period_gap_days` | accounts | Days between this and the prior balance sheet date. |
+| `period_length_change_months` | accounts | Months the reporting period differs from a year (0 = normal; ignores leap days). |
 | `days_late_this_filing` | filing history | Filing date - (balance sheet date + 9 months); negative = early. |
 | `first_accounts` | filing history | No earlier accounts filing on record. |
 | `days_since_previous_accounts` | filing history | Days since the previous accounts filing. |
@@ -268,15 +268,24 @@ address) makes it fail.
 
 ## 6. Known data quality issues
 
-1. **Sign errors.** Some filings show a negative value in brackets but tag it as positive
-   (missing `sign="-"`). Example: `tests/fixtures/accounts/Prod224_2510_10851932_20250731.html`
-   shows net assets of (7,385) and tags 7,385. Phase 3 must repair signs using accounting
-   identities before computing "negative net assets" and similar features.
-2. **Little profit and loss data.** Small and micro companies may omit the profit and loss
+1. **Sign errors: negatives tagged positive.** Some filings show a value in brackets but tag it
+   as positive (no `sign="-"`). Example: `tests/fixtures/accounts/Prod224_2510_10851932_20250731.html`
+   shows net assets of (7,385) and tags 7,385. Phase 3 repairs these with accounting identities
+   (DECISIONS 3.5).
+2. **Sign errors: positives tagged negative.** About 3% of filings tag balances that cannot be
+   negative (current assets, creditors, provisions, even employee numbers) with `sign="-"`,
+   because the figure is *shown* in brackets as a deduction. These are made positive before the
+   identity repair (DECISIONS 6.4). Together, about 16% of filings have at least one sign
+   corrected (`sign_repaired`).
+3. **Little profit and loss data.** Small and micro companies may omit the profit and loss
    account, and most do, so turnover and profit are missing for over 95% of filings.
-3. **Two tagging conventions for maturity** (`WithinOneYear` vs `CurrentFinancialInstruments`).
+4. **Two tagging conventions for maturity** (`WithinOneYear` vs `CurrentFinancialInstruments`).
    Both are handled; a few filers use neither, and their creditors go to `creditors_no_maturity`.
-4. **Only electronic filings.** Companies House says about a quarter of accounts are filed on
+5. **Tagging practice changes over time** (`reports/drift.md`): employee numbers are tagged far
+   more often recently, and the 2023 taxonomy introduced a `FilletedAccounts` accounts type
+   (mapped back to `FullAccounts`, DECISIONS 6.2).
+6. **Only electronic filings.** Companies House says about a quarter of accounts are filed on
    paper; those are not in the Accounts Data Product, so paper filers are missing from the
    sample. Whether distressed companies file on paper more or less often is unknown.
-5. **Filing month, not date.** Until Phase 2, `filing_month` is the only filing-time field.
+7. **Filing month, not date, in the accounts table.** The exact filing date (the prediction
+   date) comes from filing history in the labels step.
