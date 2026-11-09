@@ -79,6 +79,7 @@ def test_flatten_real_insolvency_response() -> None:
             "case_category": "failure",
             "start_date": date(2018, 1, 15),  # wound-up-on, not petitioned-on
             "start_date_source": "case_date",
+            "end_date": None,  # the liquidation is still open
         }
     ]
     assert flatten_insolvency(TESCO, body("insolvency_00445790.json")) == []  # 404
@@ -228,3 +229,27 @@ def test_outcome_fields_do_not_leave_the_label_step(
 ) -> None:
     out = build_labels(filings((TESCO, date(2024, 6, 1))), real_cases, real_profiles, CUTOFF)
     assert not {"company_status", "date_of_cessation"} & set(out.columns)
+
+
+def test_an_ended_case_does_not_make_later_filings_already_insolvent() -> None:
+    """Seen in real data: companies rescued from administration in 2009-2010 trade on."""
+    payload = {
+        "cases": [
+            {
+                "type": "in-administration",
+                "number": "1",
+                "dates": [
+                    {"type": "administration-started-on", "date": "2010-01-13"},
+                    {"type": "administration-ended-on", "date": "2011-01-12"},
+                ],
+            }
+        ]
+    }
+    cases = cases_frame(flatten_insolvency("00000004", payload))
+    assert cases["end_date"].to_list() == [date(2011, 1, 12)]
+    profs = profiles(("00000004", {"company_status": "active"}))
+    rows = filings(("00000004", date(2010, 6, 1)), ("00000004", date(2019, 6, 1)))
+    out = build_labels(rows, cases, profs, CUTOFF)
+    # In administration on 2010-06-01: excluded. Rescued by 2019: a normal, usable row.
+    assert out["excluded_reason"].to_list() == ["already_insolvent", None]
+    assert out["label_insolvency_12m"].to_list() == [0, 0]

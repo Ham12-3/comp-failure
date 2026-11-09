@@ -68,6 +68,21 @@ START_DATE_TYPES = frozenset(
     }
 )
 
+# Date types that mark when a case *ended* (documented `caseDates.type` values). A company can
+# leave administration or a CVA and trade on, so an old, ended case must not make a later
+# filing count as "already insolvent". (`due-to-be-dissolved-on` is a forecast, not an end.)
+END_DATE_TYPES = frozenset(
+    {
+        "concluded-winding-up-on",
+        "dissolved-on",
+        "case-end-on",
+        "administration-ended-on",
+        "administration-discharged-on",
+        "voluntary-arrangement-ended-on",
+        "moratorium-ended-on",
+    }
+)
+
 OUTCOME_LAG_DAYS = 30  # insolvency events can take a few weeks to appear on the register
 
 CASE_SCHEMA: dict[str, Any] = {
@@ -77,6 +92,7 @@ CASE_SCHEMA: dict[str, Any] = {
     "case_category": pl.String,
     "start_date": pl.Date,
     "start_date_source": pl.String,
+    "end_date": pl.Date,
 }
 
 
@@ -111,10 +127,21 @@ def case_start_date(case: Mapping[str, Any]) -> tuple[date | None, str]:
     appointed_dates = [d for d in appointed if d is not None]
     if appointed_dates:
         return min(appointed_dates), "practitioner_appointed"
-    any_dates = [d for _, d in dates if d is not None]
+    any_dates = [d for t, d in dates if d is not None and t not in END_DATE_TYPES]
     if any_dates:
         return min(any_dates), "earliest_any_date"
     return None, "missing"
+
+
+def case_end_date(case: Mapping[str, Any]) -> date | None:
+    """Earliest documented end date of a case, or None if it is still open."""
+    dates = [
+        _parse_date(d.get("date"))
+        for d in case.get("dates") or []
+        if d.get("type") in END_DATE_TYPES
+    ]
+    ended = [d for d in dates if d is not None]
+    return min(ended) if ended else None
 
 
 def flatten_insolvency(
@@ -137,6 +164,7 @@ def flatten_insolvency(
                 "case_category": case_category(case_type),
                 "start_date": start,
                 "start_date_source": source,
+                "end_date": case_end_date(case),
             }
         )
     return rows
@@ -260,7 +288,7 @@ def build_labels(
 
     # Failure cases relative to each row.
     failure = cases.filter(pl.col("case_category") == "failure").select(
-        "company_number", "case_type", "start_date"
+        "company_number", "case_type", "start_date", "end_date"
     )
     in_window = (pl.col("start_date") > pl.col("prediction_date")) & (
         pl.col("start_date") <= pl.col("horizon_end")
@@ -270,7 +298,11 @@ def build_labels(
         .sort("start_date")
         .group_by("row_id")
         .agg(
-            already_insolvent=(pl.col("start_date") <= pl.col("prediction_date")).any(),
+            # In a failure case that had started and not yet ended on the prediction date.
+            already_insolvent=(
+                (pl.col("start_date") <= pl.col("prediction_date"))
+                & (pl.col("end_date").is_null() | (pl.col("end_date") > pl.col("prediction_date")))
+            ).any(),
             insolvency_start_date=pl.col("start_date").filter(in_window).first(),
             insolvency_case_type=pl.col("case_type").filter(in_window).first(),
         )

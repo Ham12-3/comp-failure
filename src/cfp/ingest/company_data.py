@@ -69,6 +69,8 @@ DATE_COLUMNS = (
     "accounts_last_made_up_date",
     "accounts_next_due_date",
 )
+# Snapshot statuses meaning "on the register and not in any insolvency procedure".
+SNAPSHOT_ACTIVE_STATUSES = ("Active", "Active - Proposal to Strike off")
 INT_COLUMNS = (
     "charges_total",
     "charges_outstanding",

@@ -76,8 +76,9 @@ def run(
 ) -> list[str]:
     """Fetch all companies; returns the ones that failed (to retry later)."""
     failed: list[str] = []
-    started = time.monotonic()
-    requests_at_start = client.requests_made
+    started = last_time = time.monotonic()
+    requests_at_start = last_requests = client.requests_made
+    last_i = 0
     for i, number in enumerate(companies, start=1):
         try:
             fetch_company(client, number, endpoints)
@@ -87,22 +88,43 @@ def run(
             logger.error("%s failed: %s", number, exc)
             failed.append(number)
         if i % progress_every == 0 or i == len(companies):
-            elapsed = time.monotonic() - started
-            made = client.requests_made - requests_at_start
-            rate = made / elapsed if elapsed else 0.0
-            per_company = made / i
+            # Rates over the latest interval only, so time asleep does not skew the estimate.
+            now = time.monotonic()
+            interval_requests = client.requests_made - last_requests
+            rate = interval_requests / (now - last_time) if now > last_time else 0.0
+            per_company = interval_requests / (i - last_i)
             remaining = (len(companies) - i) * per_company / rate / 3600 if rate else 0.0
             logger.info(
-                "%d/%d companies, %d requests (%.2f/s, %.1f per company), ~%.1f h left, %d failed",
+                "%d/%d companies, %d requests in %.1f h (now %.2f/s, %.1f per company), "
+                "~%.1f h left, %d failed",
                 i,
                 len(companies),
-                made,
+                client.requests_made - requests_at_start,
+                (now - started) / 3600,
                 rate,
                 per_company,
                 remaining,
                 len(failed),
             )
+            last_time, last_requests, last_i = now, client.requests_made, i
     return failed
+
+
+def drop_active_in_snapshot(companies: Sequence[str], snapshot_path: Path) -> list[str]:
+    """Companies *not* active in the Free Company Data Product snapshot, in the same order.
+
+    An active company is not in liquidation, administration or receivership and is not
+    dissolved, so its labels need no API call (checked on 1,548 fetched companies: none had a
+    failure case that could affect a 2018+ label). See docs/DECISIONS.md 2.10.
+    """
+    from cfp.ingest.company_data import SNAPSHOT_ACTIVE_STATUSES
+
+    active = set(
+        pl.read_parquet(snapshot_path, columns=["company_number", "company_status"])
+        .filter(pl.col("company_status").is_in(list(SNAPSHOT_ACTIVE_STATUSES)))["company_number"]
+        .to_list()
+    )
+    return [n for n in companies if n not in active]
 
 
 def keep_system_awake() -> bool:
@@ -124,6 +146,11 @@ def main() -> None:
     parser.add_argument("--endpoints", nargs="+", choices=ENDPOINTS, default=list(ENDPOINTS))
     parser.add_argument("--limit", type=int, default=None, help="Only the first N companies.")
     parser.add_argument(
+        "--skip-active",
+        action="store_true",
+        help="Skip companies active in the company data snapshot (enough for labels).",
+    )
+    parser.add_argument(
         "--keep-awake", action="store_true", help="Stop Windows idle-sleeping during the run."
     )
     args = parser.parse_args()
@@ -134,6 +161,10 @@ def main() -> None:
         logger.info("Keep-awake request %s", "active" if keep_system_awake() else "not available")
     settings = get_settings()
     companies = sampled_companies(settings.interim_dir / "accounts.parquet")
+    if args.skip_active:
+        companies = drop_active_in_snapshot(
+            companies, settings.interim_dir / "company_snapshot.parquet"
+        )
     if args.limit:
         companies = companies[: args.limit]
     logger.info("Fetching %s for %d companies", ", ".join(args.endpoints), len(companies))
