@@ -4,9 +4,10 @@ Predicts the probability that a UK company enters insolvency (liquidation, admin
 receivership) within 12 months, using free Companies House data, and explains each score with
 its top contributing factors.
 
-> **Status:** Phase 3 (features and leakage tests); the full API fetch for Phase 2 labels is
-> running. See [PROJECT_SPEC.md](PROJECT_SPEC.md) for the plan, [docs/DATA.md](docs/DATA.md)
-> for the data and [docs/DECISIONS.md](docs/DECISIONS.md) for decisions made so far.
+> **Status:** Phases 0-4 done (data, labels, features, leakage tests, model). Results and
+> limits: [docs/MODEL_CARD.md](docs/MODEL_CARD.md), [reports/metrics.md](reports/metrics.md).
+> See [PROJECT_SPEC.md](PROJECT_SPEC.md) for the plan, [docs/DATA.md](docs/DATA.md) for the data
+> and [docs/DECISIONS.md](docs/DECISIONS.md) for decisions made so far.
 >
 > Not financial or credit advice.
 
@@ -26,6 +27,15 @@ Build the accounts sample (about 3.6 GB of downloads, then about an hour of pars
 uv run python -m cfp.ingest.accounts_download --dry-run   # size estimate
 uv run python -m cfp.ingest.accounts_download
 uv run python -m cfp.ingest.accounts_parse
+```
+
+Labels, features and model (only the fetch calls the API; the rest read the cache):
+
+```bash
+uv run python -m cfp.ingest.fetch_companies --keep-awake   # API data (resumable, rate-limited)
+uv run python -m cfp.labels.build_labels
+uv run python -m cfp.features.build_features
+uv run python -m cfp.train.train
 ```
 
 Lint, format and type-check:

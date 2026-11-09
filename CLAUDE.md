@@ -33,6 +33,7 @@ uv run python -m cfp.ingest.company_data                  # -> data/interim/comp
 uv run python -m cfp.ingest.fetch_companies [--limit N]   # API data for sampled companies (~14.5 h)
 uv run python -m cfp.labels.build_labels                  # cache only -> data/processed/labels.parquet
 uv run python -m cfp.features.build_features              # cache only -> data/processed/features.parquet
+uv run python -m cfp.train.train                         # reports/, models/, MLflow (sqlite:///mlflow.db)
 ```
 
 The download keeps a running byte total in `data/raw/accounts_sample/manifest.json` and refuses

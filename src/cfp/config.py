@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     data_dir: Path = Field(default=Path("data"), validation_alias="CFP_DATA_DIR")
     reports_dir: Path = Field(default=Path("reports"), validation_alias="CFP_REPORTS_DIR")
     mlflow_tracking_uri: str = Field(
-        default="file:./mlruns", validation_alias="MLFLOW_TRACKING_URI"
+        default="sqlite:///mlflow.db", validation_alias="MLFLOW_TRACKING_URI"
     )
 
     @property

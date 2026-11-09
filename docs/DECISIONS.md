@@ -52,7 +52,7 @@ One entry per decision: what was chosen, and why. Newest phase at the bottom.
 * **The first API key was for the Test (sandbox) environment.** The live API rejected it with 401, and the sandbox holds none of the real companies we tried (Carillion, Tesco, a sampled micro-entity: all 404). Resolved with a Live-environment key; real responses for every endpoint are saved in `tests/fixtures/ch_api/`.
 * **Real responses carry rate-limit headers the docs don't mention:** `X-Ratelimit-Limit: 600`, `X-Ratelimit-Remain`, `X-Ratelimit-Reset` (epoch seconds) and `X-Ratelimit-Window: 5m`. After a 429 the client now waits until `X-Ratelimit-Reset` when there is no `Retry-After`.
 
-## Phase 2: Labels (in progress)
+## Phase 2: Labels (2026-11-09)
 
 | # | Decision | Why |
 |---|----------|-----|
@@ -65,6 +65,9 @@ One entry per decision: what was chosen, and why. Newest phase at the bottom.
 | 2.7 | **Insolvency and charges are fetched only when the profile links to them** (`links.insolvency` / `links.charges`, or the deprecated `has_insolvency_history` / `has_charges`). | Saves a request for most companies. Both forms appear in real profiles, and the swagger marks the booleans deprecated. |
 | 2.8 | **One fetch run gets everything Phases 2 and 3 need** (profile, insolvency, full filing history, officers, charges), in sample-hash order. Labels are built from the cache only (`cache_only=True`). | The trial took 3.3 requests per company, so about 98k requests (~14.5 hours) for the full sample. Hash order means a partial run is still a random subsample, and a cache-only build can never trigger a request. |
 | 2.9 | **Downloaded the Free Company Data Product** (`BasicCompanyDataAsOneFile-2026-11-01.zip`, 495 MB; 4.06 GB of the 5 GB budget used in total). Used for checks and static attributes only. | One file gives incorporation date, SIC code and postcode for 5.7 million companies. Its status fields describe November 2026, so they are never features. It shows 39% of our sampled companies have been dissolved since and 376 are currently in liquidation, a useful check on the labels. |
+| 2.10 | **A case only makes a filing "already insolvent" if it had started and not ended by the prediction date** (end = earliest documented end-type date: `administration-ended-on`, `concluded-winding-up-on`, `case-end-on`...). | Found in real data: companies rescued from administration in 2009-2010 that file normally today. The first version excluded all their later filings. |
+| 2.11 | **`--skip-active` fetch mode built but not used:** companies "Active" in the bulk snapshot need no API call for labels. | Checked on 1,548 fetched companies: none had a failure case that could affect a 2018+ label (2 had 2009-2010 administrations that ended). It would cut the label fetch from about 13 hours to 2. Kept for re-runs; not used for this build (2.12). |
+| 2.12 | **Build on the companies fetched so far** (2,721 by 9 November 2026) instead of waiting about 13 hours for all 29,584. The fetch keeps running in the background; re-running `build_labels` / `build_features` picks up more. | The API rate limit (600 requests / 5 min) is the bottleneck and was the user's call: move on with the data in hand. Because companies are fetched in sample-hash order, the subsample is random, not biased towards any kind of company. Cost: only 42 failures, so Phase 4 metrics need confidence intervals. |
 
 ## Phase 3: Features and leakage tests (2026-11-08)
 
@@ -84,3 +87,24 @@ One entry per decision: what was chosen, and why. Newest phase at the bottom.
 
 * **No single feature separates failures with AUC above 0.73** on the first 1,008 companies (22 failures), so there's no sign of leakage. The strongest signals are size and debt (formal insolvency happens to trading companies with creditors; dormant shells get struck off instead), low cash relative to short-term debt, and a history of late accounts.
 * **Float rounding noise:** polars can round the last bit of a division differently depending on batch size, so the leakage test compares floats with a 1e-9 relative tolerance.
+
+## Phase 4: Training and evaluation (2026-11-09)
+
+| # | Decision | Why |
+|---|----------|-----|
+| 4.1 | **Split by filing year: train 2018-2022, validation 2023, test 2024-2025.** | The spec's 2017-21 / 22 / 23 shifted to the years we have. 2024-2025 is the latest period whose 12-month outcome is observable. |
+| 4.2 | **Choices are made on rolling validation** (2021, 2022, 2023, each predicted by a model trained on the years before it), never on the test years. | With 9 failures in 2023, one validation year is too noisy to tune on; three years give 20+. Test years are never used for tuning or model choice. |
+| 4.3 | **LightGBM stays the main model** although logistic regression scored higher on the test years. | LightGBM is best on rolling validation (PR-AUC 0.028 vs 0.012). Switching after seeing the test set would turn the test set into a second validation set. |
+| 4.4 | **Class weighting** (`scale_pos_weight`), then **Platt scaling** on 2023, not isotonic. | Weighting helps the trees see the 0.3% positives; Platt fixes the probability scale afterwards with only two parameters. Isotonic would fit a staircase to 9 failures. |
+| 4.5 | **Every test metric has a bootstrap 95% interval.** | 15 test failures: point estimates alone would invite over-reading. |
+| 4.6 | **Industry as SIC section (21 levels) instead of 2-digit division (~90); categorical splits smoothed harder** (`cat_smooth=50`, `max_cat_threshold=8`). | The first run's SHAP summary was led by SIC division and postcode area, with validation far above test: memorised categories. These are capacity limits justified by the number of failures, not tuned to the test score. Note: the first run's test numbers were visible when this change was made. |
+| 4.7 | **Baselines:** rule = "this filing late (more than 9 months after the balance sheet date) OR negative net assets"; logistic regression on signed-log, median-imputed, scaled numbers plus one-hot categories (rare levels grouped), balanced class weights. | Spec section 7. The rule is the obvious analyst heuristic; the logistic model shows what a linear model gets from the same features. |
+| 4.8 | **Explanations: the 5 features with the largest absolute SHAP value, in both directions,** worded from the feature registry ("Current assets / current liabilities: 0.83. This raises the risk."). | Plain English from the same descriptions as the docs. Showing what lowers the risk too is more honest than listing only the alarming parts. |
+| 4.9 | **MLflow: full package with a SQLite store** (`sqlite:///mlflow.db`, gitignored). | MLflow 3.18 refuses the old `./mlruns` folder store, and `mlflow-skinny` cannot use a database. |
+| 4.10 | **Model files in `models/`** (`lightgbm.txt`, `model_meta.json` with feature order, category levels and calibrator), gitignored. | Phase 5 decides how the API container gets them (train in the image, or commit the small model). |
+
+### Findings
+
+* **The signal is real but weak, and the sample is the bottleneck.** On validation every model beats chance (PR-AUC 0.006-0.028 against a base rate around 0.004), but on 15 test failures the models cannot be told apart. More failures would help more than any modelling change.
+* **The API fetch process died at about 18:38 on 9 November** (3,556 companies, no error logged; the machine was at 100% CPU and low memory at the time). The model uses the 3,554 companies fetched by then. The fetch resumes where it stopped if re-run.
+* **pandas 3 deprecates building a Categorical from unseen values**, so unseen categories are now mapped to missing explicitly.

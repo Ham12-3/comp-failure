@@ -169,7 +169,10 @@ FEATURES: dict[str, tuple[str, str]] = {
     "company_age_years": ("profile", "Years since incorporation."),
     "company_type": ("profile", "Legal form (ltd, plc, llp, ...)."),
     "jurisdiction": ("profile", "England and Wales / Scotland / Northern Ireland."),
-    "sic_division": ("profile", "First two digits of the first SIC code (today's code)."),
+    "sic_section": (
+        "profile",
+        "Industry: UK SIC 2007 section (A-U) of the first SIC code (today's code).",
+    ),
     "n_sic_codes": ("profile", "Number of SIC codes."),
 }
 

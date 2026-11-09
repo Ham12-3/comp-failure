@@ -92,7 +92,7 @@ Equity is missing slightly more often in recent filings (4.9% of non-dormant fil
 11.6% in 2025) while `net_assets` is present; the two are equal by definition, so Phase 3 can
 fill one from the other.
 
-## 4. Labels (Phase 2, in progress)
+## 4. Labels (Phase 2)
 
 Built by `cfp.labels.build_labels` into `data/processed/labels.parquet`, one row per filing.
 
@@ -103,15 +103,55 @@ Built by `cfp.labels.build_labels` into `data/processed/labels.parquet`, one row
 | `insolvency_case_type`, `insolvency_start_date` | The first such case in the window. |
 | `solvent_liquidation_12m` | A members' voluntary liquidation started in the window (recorded, not a failure). |
 | `label_strike_off_12m` | Dissolved in the window with no insolvency case: the second target. |
-| `excluded_reason` | Null for usable rows; otherwise `already_insolvent`, `outcome_not_observable` or `no_profile`. |
+| `excluded_reason` | Null for usable rows; otherwise `already_insolvent` (in a failure case that had started and not ended), `outcome_not_observable` or `no_profile`. |
 
-Full definitions and reasons: `docs/DECISIONS.md` 2.1-2.6. Row counts, date range and class
-balance will be filled in once the API fetch for all 29,584 sampled companies has run.
+Full definitions and reasons: `docs/DECISIONS.md` 2.1-2.11.
 
-**Early indication** (Free Company Data Product, 1 November 2026): of the 29,584 sampled
-companies, 17,949 are still on the register, 376 of them in liquidation and 18 in
-administration; the other 11,635 have been dissolved (by strike-off or after liquidation; the
-API tells which).
+### Coverage
+
+The API fetch is rate-limited to about 2,100 companies an hour. **We decided to build on the
+companies fetched so far rather than wait** (DECISIONS 2.12). The fetch runs in sample-hash
+order, so these companies are a random subsample of the 29,584 sampled companies, and the
+numbers below grow each time `build_labels` is re-run while the fetch continues.
+
+Snapshot used here: **2,721 companies fetched** by 9 November 2026 (outcome cutoff 8 November
+2026, minus a 30-day reporting lag).
+
+| | |
+|---|---|
+| Rows (filings) | 11,540 |
+| Usable rows | 11,423 from 2,705 companies |
+| Excluded: outcome not yet observable | 108 (filed after 9 October 2025) |
+| Excluded: already insolvent | 9 |
+| Prediction dates (usable) | 2018-01-02 to 2025-10-09 |
+| Prediction date matched exactly in filing history | 11,538 of 11,540 (2 fall back to month end) |
+
+### Class balance (usable rows)
+
+| Prediction year | Rows | Insolvencies | Insolvency rate | Strike-off rate |
+|---|---|---|---|---|
+| 2018 | 1,196 | 3 | 0.25% | 6.4% |
+| 2019 | 1,288 | 6 | 0.47% | 5.4% |
+| 2020 | 1,196 | 3 | 0.25% | 5.4% |
+| 2021 | 1,624 | 4 | 0.25% | 5.8% |
+| 2022 | 1,549 | 5 | 0.32% | 4.1% |
+| 2023 | 1,612 | 7 | 0.43% | 5.1% |
+| 2024 | 1,708 | 7 | 0.41% | 5.8% |
+| 2025 | 1,250 | 7 | 0.56% | 5.7% |
+| **All** | **11,423** | **42** | **0.37%** | **5.4%** |
+
+* Failures by type: 35 creditors' voluntary liquidations, 6 compulsory liquidations, 1
+  administration. A further 45 members' voluntary (solvent) liquidations are not counted.
+* Time from filing to failure: median 210 days (range 23 to 361).
+* The rate is in line with official UK figures (around 0.5% of registered companies a year)
+  but **42 positives is few**: per-year metrics in Phase 4 will be noisy, and confidence
+  intervals must be reported with them.
+* Rates in 2020-2021 are low, consistent with the COVID-era restrictions on winding-up
+  petitions, and rise from 2022. A time-based split has to live with that shift.
+
+**Cross-check** (Free Company Data Product, 1 November 2026): of all 29,584 sampled
+companies, 17,949 are still on the register (376 in liquidation, 18 in administration) and
+11,635 have been dissolved.
 
 ## 5. Features (Phase 3)
 
@@ -145,7 +185,8 @@ address) makes it fail.
 * Accounts are treated as due 9 months after the balance sheet date (private companies). Public
   companies have 6 months and first accounts have different rules, so `days_late_this_filing`
   is rough for those (`first_accounts` flags the latter).
-* SIC code and legal form come from today's profile; they rarely change.
+* SIC code and legal form come from today's profile; they rarely change. Industry is used
+  at SIC section level (21 sections) because finer codes overfit with few failures.
 * `directors_in_office` uses effective appointment/resignation dates, which can be up to 14
   days earlier than when they were filed.
 
@@ -222,7 +263,7 @@ address) makes it fail.
 | `company_age_years` | profile | Years since incorporation. |
 | `company_type` | profile | Legal form (ltd, plc, llp, ...). |
 | `jurisdiction` | profile | England and Wales / Scotland / Northern Ireland. |
-| `sic_division` | profile | First two digits of the first SIC code (today's code). |
+| `sic_section` | profile | Industry: UK SIC 2007 section (A-U) of the first SIC code (today's code). |
 | `n_sic_codes` | profile | Number of SIC codes. |
 
 ## 6. Known data quality issues
