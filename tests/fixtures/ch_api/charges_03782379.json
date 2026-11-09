@@ -1,0 +1,188 @@
+{
+  "body": {
+    "etag": "3032f75352c46a94044f4e59c27f2a38bbb1aef4",
+    "items": [
+      {
+        "charge_code": "037823790002",
+        "charge_number": 2,
+        "classification": {
+          "description": "A registered charge",
+          "type": "charge-description"
+        },
+        "created_on": "2017-10-26",
+        "delivered_on": "2017-10-27",
+        "etag": "925eca089a6cdcc27db3ae89409fe2aa8c0c1825",
+        "links": {
+          "self": "/company/03782379/charges/AyGc-Xk5R4KE5SBKO6fKgKIa7uM"
+        },
+        "particulars": {
+          "contains_fixed_charge": true,
+          "contains_floating_charge": true,
+          "contains_negative_pledge": true,
+          "floating_charge_covers_all": true
+        },
+        "persons_entitled": [
+          {
+            "name": "Glas Trust Corporation Limited, 45 Ludgate Hill, London EC4M 7JU, United Kingdom"
+          }
+        ],
+        "status": "outstanding",
+        "transactions": [
+          {
+            "delivered_on": "2017-10-27",
+            "filing_type": "create-charge-with-deed",
+            "links": {
+              "filing": "/company/03782379/filing-history/MzE4ODg3ODc0NWFkaXF6a2N4"
+            }
+          }
+        ]
+      },
+      {
+        "charge_code": "037823790006",
+        "charge_number": 6,
+        "classification": {
+          "description": "A registered charge",
+          "type": "charge-description"
+        },
+        "created_on": "2017-10-24",
+        "delivered_on": "2017-10-28",
+        "etag": "3f8198c619cf785d450c9743a850939b36f17080",
+        "links": {
+          "self": "/company/03782379/charges/QKWcTG6BNwdy-eBOXvRsJxGuALA"
+        },
+        "particulars": {
+          "contains_fixed_charge": true,
+          "contains_floating_charge": true,
+          "contains_negative_pledge": true,
+          "floating_charge_covers_all": true
+        },
+        "persons_entitled": [
+          {
+            "name": "Glas Trust Corporation Limited, 45 Ludgate Hill, London EC4M 7JU, United Kingdom"
+          }
+        ],
+        "status": "outstanding",
+        "transactions": [
+          {
+            "delivered_on": "2017-10-28",
+            "filing_type": "create-charge-with-deed",
+            "links": {
+              "filing": "/company/03782379/filing-history/MzE4ODkwNjc1N2FkaXF6a2N4"
+            }
+          }
+        ]
+      },
+      {
+        "charge_code": "037823790005",
+        "charge_number": 5,
+        "classification": {
+          "description": "A registered charge",
+          "type": "charge-description"
+        },
+        "created_on": "2017-10-24",
+        "delivered_on": "2017-10-27",
+        "etag": "3b466fd9d13fa2762114b02c2629a876ef69c793",
+        "links": {
+          "self": "/company/03782379/charges/GWgkddb7yx6KKokgYOuPZtRuCwY"
+        },
+        "particulars": {
+          "contains_fixed_charge": true,
+          "contains_floating_charge": true,
+          "contains_negative_pledge": true,
+          "floating_charge_covers_all": true
+        },
+        "persons_entitled": [
+          {
+            "name": "Glas Trust Corporation Limited, 45 Ludgate Hill, London EC4M 7JU, United Kingdom"
+          }
+        ],
+        "status": "outstanding",
+        "transactions": [
+          {
+            "delivered_on": "2017-10-27",
+            "filing_type": "create-charge-with-deed",
+            "links": {
+              "filing": "/company/03782379/filing-history/MzE4ODg3ODczOWFkaXF6a2N4"
+            }
+          }
+        ]
+      },
+      {
+        "charge_code": "037823790004",
+        "charge_number": 4,
+        "classification": {
+          "description": "A registered charge",
+          "type": "charge-description"
+        },
+        "created_on": "2017-10-24",
+        "delivered_on": "2017-10-27",
+        "etag": "3ca806d637eeeda6db6649a7d630256c913b98cf",
+        "links": {
+          "self": "/company/03782379/charges/RX8mPfEwE7ppfopowZqBvBSCN1g"
+        },
+        "particulars": {
+          "contains_fixed_charge": true,
+          "contains_floating_charge": true,
+          "contains_negative_pledge": true,
+          "floating_charge_covers_all": true
+        },
+        "persons_entitled": [
+          {
+            "name": "Glas Trust Corporation Limited, 45 Ludgate Hill, London EC4M 7JU, United Kingdom"
+          }
+        ],
+        "status": "outstanding",
+        "transactions": [
+          {
+            "delivered_on": "2017-10-27",
+            "filing_type": "create-charge-with-deed",
+            "links": {
+              "filing": "/company/03782379/filing-history/MzE4ODg3ODcxOWFkaXF6a2N4"
+            }
+          }
+        ]
+      },
+      {
+        "charge_code": "037823790003",
+        "charge_number": 3,
+        "classification": {
+          "description": "A registered charge",
+          "type": "charge-description"
+        },
+        "created_on": "2017-10-24",
+        "delivered_on": "2017-10-27",
+        "etag": "445cec50df7fc4bef0e7d47203dbd90ce9614709",
+        "links": {
+          "self": "/company/03782379/charges/BSHPQUEgoUXpPWHAkh78hZ_gUP4"
+        },
+        "particulars": {
+          "contains_fixed_charge": true,
+          "contains_floating_charge": true,
+          "contains_negative_pledge": true,
+          "floating_charge_covers_all": true
+        },
+        "persons_entitled": [
+          {
+            "name": "Glas Trust Corporation Limited, 45 Ludgate Hill, London EC4M 7JU, United Kingdom"
+          }
+        ],
+        "status": "outstanding",
+        "transactions": [
+          {
+            "delivered_on": "2017-10-27",
+            "filing_type": "create-charge-with-deed",
+            "links": {
+              "filing": "/company/03782379/filing-history/MzE4ODg3ODc1MGFkaXF6a2N4"
+            }
+          }
+        ]
+      }
+    ],
+    "part_satisfied_count": 0,
+    "satisfied_count": 0,
+    "total_count": 6,
+    "unfiltered_count": 6
+  },
+  "path": "/company/03782379/charges?items_per_page=5",
+  "status": 200
+}

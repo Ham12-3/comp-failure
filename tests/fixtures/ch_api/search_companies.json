@@ -1,0 +1,151 @@
+{
+  "items": [
+    {
+      "address": {
+        "address_line_1": "29 Wellington Street",
+        "locality": "Leeds",
+        "postal_code": "LS1 4DL",
+        "premises": "Central Square 8th Floor",
+        "region": "West Yorkshire"
+      },
+      "address_snippet": "Central Square 8th Floor 29 Wellington Street, Leeds, West Yorkshire, LS1 4DL",
+      "company_number": "03782379",
+      "company_status": "liquidation",
+      "company_type": "plc",
+      "date_of_creation": "1999-05-28",
+      "description": "03782379 - Incorporated on 28 May 1999 - Liquidation",
+      "description_identifier": [
+        "incorporated-on",
+        "liquidation"
+      ],
+      "kind": "searchresults#company",
+      "links": {
+        "self": "/company/03782379"
+      },
+      "matches": {
+        "snippet": []
+      },
+      "snippet": "",
+      "title": "CARILLION PLC"
+    },
+    {
+      "address": {
+        "address_line_1": "Floor Central Square",
+        "address_line_2": "29 Wellington Street",
+        "locality": "Leeds",
+        "postal_code": "LS1 4DL",
+        "premises": "Pwc 8th",
+        "region": "West Yorkshire"
+      },
+      "address_snippet": "Pwc 8th Floor Central Square, 29 Wellington Street, Leeds, West Yorkshire, LS1 4DL",
+      "company_number": "10556292",
+      "company_status": "liquidation",
+      "company_type": "ltd",
+      "date_of_creation": "2017-01-10",
+      "description": "10556292 - Incorporated on 10 January 2017 - Liquidation",
+      "description_identifier": [
+        "incorporated-on",
+        "liquidation"
+      ],
+      "kind": "searchresults#company",
+      "links": {
+        "self": "/company/10556292"
+      },
+      "matches": {
+        "snippet": []
+      },
+      "snippet": "",
+      "title": "CARILLION ADVICE SERVICES LIMITED"
+    },
+    {
+      "address": {
+        "address_line_1": "Floor Central Square",
+        "address_line_2": "29 Wellington Street",
+        "locality": "Leeds",
+        "postal_code": "LS1 4DL",
+        "premises": "Pwc 8th",
+        "region": "West Yorkshire"
+      },
+      "address_snippet": "Pwc 8th Floor Central Square, 29 Wellington Street, Leeds, West Yorkshire, LS1 4DL",
+      "company_number": "01367044",
+      "company_status": "liquidation",
+      "company_type": "ltd",
+      "date_of_creation": "1978-05-08",
+      "description": "01367044 - Incorporated on 8 May 1978 - Liquidation",
+      "description_identifier": [
+        "incorporated-on",
+        "liquidation"
+      ],
+      "kind": "searchresults#company",
+      "links": {
+        "self": "/company/01367044"
+      },
+      "matches": {
+        "snippet": []
+      },
+      "snippet": "",
+      "title": "CARILLION (AM) LIMITED"
+    },
+    {
+      "address": {
+        "address_line_1": "144 Morrison Street",
+        "locality": "Edinburgh",
+        "postal_code": "EH3 8EX",
+        "premises": "Atria One"
+      },
+      "address_snippet": "Atria One, 144 Morrison Street, Edinburgh, EH3 8EX",
+      "company_number": "SC020258",
+      "company_status": "liquidation",
+      "company_type": "ltd",
+      "date_of_creation": "1938-03-15",
+      "description": "SC020258 - Incorporated on 15 March 1938 - Liquidation",
+      "description_identifier": [
+        "incorporated-on",
+        "liquidation"
+      ],
+      "kind": "searchresults#company",
+      "links": {
+        "self": "/company/SC020258"
+      },
+      "matches": {
+        "snippet": []
+      },
+      "snippet": "",
+      "title": "CARILLION (AMBS) LIMITED"
+    },
+    {
+      "address": {
+        "address_line_1": "Floor Central Square 29",
+        "address_line_2": "Wellington Street",
+        "locality": "Leeds",
+        "postal_code": "LS1 4DL",
+        "premises": "Pwc 8th",
+        "region": "West Yorkshire"
+      },
+      "address_snippet": "Pwc 8th Floor Central Square 29, Wellington Street, Leeds, West Yorkshire, LS1 4DL",
+      "company_number": "01685693",
+      "company_status": "liquidation",
+      "company_type": "ltd",
+      "date_of_creation": "1982-12-09",
+      "description": "01685693 - Incorporated on 9 December 1982 - Liquidation",
+      "description_identifier": [
+        "incorporated-on",
+        "liquidation"
+      ],
+      "kind": "searchresults#company",
+      "links": {
+        "self": "/company/01685693"
+      },
+      "matches": {
+        "snippet": []
+      },
+      "snippet": "",
+      "title": "CARILLION AM DEVELOPMENTS LIMITED"
+    }
+  ],
+  "items_per_page": 5,
+  "kind": "search#companies",
+  "page_number": 1,
+  "start_index": 0,
+  "total_results": 166
+}

@@ -23,6 +23,8 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore",
+        # `COMPANIES_HOUSE_API_KEY=` (blank) means "not set", not "the empty string".
+        env_ignore_empty=True,
     )
 
     companies_house_api_key: SecretStr | None = Field(
