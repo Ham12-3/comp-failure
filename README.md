@@ -157,8 +157,11 @@ src/cfp/serve/      FastAPI app and live scoring
 app/                web page (HTML, CSS, JavaScript)
 tests/              118 tests; fixtures are real Companies House responses
 reports/            metrics, plots, drift report (committed as evidence)
-docs/               DATA.md, MODEL_CARD.md, DECISIONS.md
+docs/               DEVELOPER_GUIDE.md, DATA.md, MODEL_CARD.md, DECISIONS.md
 ```
+
+New to the code? Start with the [developer guide](docs/DEVELOPER_GUIDE.md): setup, the
+pipeline, the code map, the rules that keep the model honest, common tasks and known gotchas.
 
 ## Limits
 
