@@ -1,0 +1,93 @@
+{
+  "body": {
+    "filing_history_status": "filing-history-available",
+    "items": [
+      {
+        "action_date": "2019-07-16",
+        "barcode": "A89FI1YR",
+        "category": "address",
+        "date": "2019-07-16",
+        "description": "change-registered-office-address-company-with-date-old-address-new-address",
+        "description_values": {
+          "change_date": "2019-07-16",
+          "new_address": "Central Square 8th Floor 29 Wellington Street Leeds West Yorkshire LS1 4DL",
+          "old_address": ", Crown House Birch Street, Wolverhampton, WV1 4JX, United Kingdom"
+        },
+        "links": {
+          "document_metadata": "https://document-api.company-information.service.gov.uk/document/MKzs9s8l3WdYliQbyxJITFgs0FKQ0ZvDA271bR41U2Q",
+          "self": "/company/03782379/filing-history/MzIzOTMxNzM3M2FkaXF6a2N4"
+        },
+        "pages": 2,
+        "paper_filed": true,
+        "transaction_id": "MzIzOTMxNzM3M2FkaXF6a2N4",
+        "type": "AD01"
+      },
+      {
+        "action_date": "2018-10-01",
+        "barcode": "X7FMESBC",
+        "category": "address",
+        "date": "2018-10-01",
+        "description": "change-registered-office-address-company-with-date-old-address-new-address",
+        "description_values": {
+          "change_date": "2018-10-01",
+          "new_address": "Central Square 8th Floor 29 Wellington Street Leeds West Yorkshire LS1 4DL",
+          "old_address": ", Carillion House 84 Salop Street, Wolverhampton, WV3 0SR, United Kingdom"
+        },
+        "links": {
+          "document_metadata": "https://document-api.company-information.service.gov.uk/document/74QNz5prWthGLiutr-HkTXWX0eZzLFlAUKbLglUrPNk",
+          "self": "/company/03782379/filing-history/MzIxNTg3OTU5N2FkaXF6a2N4"
+        },
+        "pages": 1,
+        "transaction_id": "MzIxNTg3OTU5N2FkaXF6a2N4",
+        "type": "AD01"
+      },
+      {
+        "barcode": "A7E2DWDD",
+        "category": "insolvency",
+        "date": "2018-09-18",
+        "description": "liquidation-disclaimer-notice",
+        "links": {
+          "document_metadata": "https://document-api.company-information.service.gov.uk/document/nTCjvJ4R7-USR7G9Qgh2fzxLl101zyYPY7roU8s_Yfg",
+          "self": "/company/03782379/filing-history/MzIxNDc2NzE2MWFkaXF6a2N4"
+        },
+        "pages": 7,
+        "paper_filed": true,
+        "transaction_id": "MzIxNDc2NzE2MWFkaXF6a2N4",
+        "type": "NDISC"
+      },
+      {
+        "barcode": "A7E2DWI1",
+        "category": "insolvency",
+        "date": "2018-09-18",
+        "description": "liquidation-disclaimer-notice",
+        "links": {
+          "document_metadata": "https://document-api.company-information.service.gov.uk/document/XaxD-MQdPHsVVoFCINhvwuScexMH1fBO_NJCUnvSVsE",
+          "self": "/company/03782379/filing-history/MzIxNDc2NjQ1M2FkaXF6a2N4"
+        },
+        "pages": 9,
+        "paper_filed": true,
+        "transaction_id": "MzIxNDc2NjQ1M2FkaXF6a2N4",
+        "type": "NDISC"
+      },
+      {
+        "barcode": "A7E2DWIH",
+        "category": "insolvency",
+        "date": "2018-09-18",
+        "description": "liquidation-disclaimer-notice",
+        "links": {
+          "document_metadata": "https://document-api.company-information.service.gov.uk/document/vG-kWT8-uRVb1ySXo7fFqeq4KzkLn3fHrqjV17vPGYE",
+          "self": "/company/03782379/filing-history/MzIxNDc2NjMyOWFkaXF6a2N4"
+        },
+        "pages": 7,
+        "paper_filed": true,
+        "transaction_id": "MzIxNDc2NjMyOWFkaXF6a2N4",
+        "type": "NDISC"
+      }
+    ],
+    "items_per_page": 5,
+    "start_index": 0,
+    "total_count": 323
+  },
+  "path": "/company/03782379/filing-history?items_per_page=5",
+  "status": 200
+}

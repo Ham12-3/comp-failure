@@ -1,0 +1,38 @@
+{
+  "body": {
+    "cases": [
+      {
+        "dates": [
+          {
+            "date": "2018-01-15",
+            "type": "petitioned-on"
+          },
+          {
+            "date": "2018-01-15",
+            "type": "wound-up-on"
+          }
+        ],
+        "number": "1",
+        "practitioners": [
+          {
+            "address": {
+              "address_line_1": "2nd Floor, 4 Abbey Orchard Street",
+              "address_line_2": "Westminster",
+              "locality": "London",
+              "postal_code": "SW1P 2HT"
+            },
+            "name": "The Official Receiver Or London",
+            "role": "practitioner"
+          }
+        ],
+        "type": "compulsory-liquidation"
+      }
+    ],
+    "etag": "725e9f9cf56c516d408c7b7311a54785000bca01",
+    "status": [
+      "liquidation"
+    ]
+  },
+  "path": "/company/03782379/insolvency",
+  "status": 200
+}

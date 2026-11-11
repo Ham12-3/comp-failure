@@ -1,0 +1,16 @@
+{
+  "body": {
+    "active_count": 0,
+    "ceased_count": 0,
+    "items": [],
+    "items_per_page": 5,
+    "links": {
+      "exemptions": "/company/00445790/exemptions",
+      "self": "/company/00445790/persons-with-significant-control"
+    },
+    "start_index": 0,
+    "total_results": 0
+  },
+  "path": "/company/00445790/persons-with-significant-control?items_per_page=5",
+  "status": 200
+}

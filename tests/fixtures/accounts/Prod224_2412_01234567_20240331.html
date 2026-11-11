@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Synthetic iXBRL accounts for parser tests. Not a real company. Structure mirrors real FRS 102
+  filings from the Accounts Data Product: contexts for the current and prior balance sheet
+  dates and periods, creditors split by a maturity dimension, report facts carried on
+  dimension members, and the usual number formats (sign, scale, zero dash).
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ix="http://www.xbrl.org/2013/inlineXBRL"
+      xmlns:ixt2="http://www.xbrl.org/inlineXBRL/transformation/2011-07-31"
+      xmlns:xbrli="http://www.xbrl.org/2003/instance"
+      xmlns:xbrldi="http://xbrl.org/2006/xbrldi"
+      xmlns:iso4217="http://www.xbrl.org/2003/iso4217"
+      xmlns:core="http://xbrl.frc.org.uk/fr/2023-01-01/core"
+      xmlns:bus="http://xbrl.frc.org.uk/cd/2023-01-01/business">
+<head><title>Synthetic Test Company Limited</title></head>
+<body>
+<div style="display:none">
+<ix:header>
+<ix:hidden>
+  <ix:nonNumeric name="bus:EntityDormantTruefalse" contextRef="cur_period">false</ix:nonNumeric>
+  <ix:nonNumeric name="bus:AccountingStandardsApplied" contextRef="cur_standard"></ix:nonNumeric>
+  <ix:nonNumeric name="bus:AccountsType" contextRef="cur_type"></ix:nonNumeric>
+</ix:hidden>
+<ix:resources>
+  <xbrli:context id="cur">
+    <xbrli:entity><xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier></xbrli:entity>
+    <xbrli:period><xbrli:instant>2024-03-31</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="prev">
+    <xbrli:entity><xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier></xbrli:entity>
+    <xbrli:period><xbrli:instant>2023-03-31</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="cur_period">
+    <xbrli:entity><xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier></xbrli:entity>
+    <xbrli:period><xbrli:startDate>2023-04-01</xbrli:startDate><xbrli:endDate>2024-03-31</xbrli:endDate></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="prev_period">
+    <xbrli:entity><xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier></xbrli:entity>
+    <xbrli:period><xbrli:startDate>2022-04-01</xbrli:startDate><xbrli:endDate>2023-03-31</xbrli:endDate></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="cur_within">
+    <xbrli:entity>
+      <xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier>
+      <xbrli:segment><xbrldi:explicitMember dimension="core:MaturitiesOrExpirationPeriodsDimension">core:WithinOneYear</xbrldi:explicitMember></xbrli:segment>
+    </xbrli:entity>
+    <xbrli:period><xbrli:instant>2024-03-31</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="prev_within">
+    <xbrli:entity>
+      <xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier>
+      <xbrli:segment><xbrldi:explicitMember dimension="core:MaturitiesOrExpirationPeriodsDimension">core:WithinOneYear</xbrldi:explicitMember></xbrli:segment>
+    </xbrli:entity>
+    <xbrli:period><xbrli:instant>2023-03-31</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="cur_after">
+    <xbrli:entity>
+      <xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier>
+      <xbrli:segment><xbrldi:explicitMember dimension="core:MaturitiesOrExpirationPeriodsDimension">core:AfterOneYear</xbrldi:explicitMember></xbrli:segment>
+    </xbrli:entity>
+    <xbrli:period><xbrli:instant>2024-03-31</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="cur_current_fi">
+    <xbrli:entity>
+      <xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier>
+      <xbrli:segment><xbrldi:explicitMember dimension="core:FinancialInstrumentCurrentNon-currentDimension">core:CurrentFinancialInstruments</xbrldi:explicitMember></xbrli:segment>
+    </xbrli:entity>
+    <xbrli:period><xbrli:instant>2024-03-31</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="prev_noncurrent_after">
+    <xbrli:entity>
+      <xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier>
+      <xbrli:segment>
+        <xbrldi:explicitMember dimension="core:FinancialInstrumentCurrentNon-currentDimension">core:Non-currentFinancialInstruments</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="core:MaturitiesOrExpirationPeriodsDimension">core:AfterOneYear</xbrldi:explicitMember>
+      </xbrli:segment>
+    </xbrli:entity>
+    <xbrli:period><xbrli:instant>2023-03-31</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="cur_share_capital">
+    <xbrli:entity>
+      <xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier>
+      <xbrli:segment><xbrldi:explicitMember dimension="core:EquityClassesDimension">core:ShareCapital</xbrldi:explicitMember></xbrli:segment>
+    </xbrli:entity>
+    <xbrli:period><xbrli:instant>2024-03-31</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="cur_standard">
+    <xbrli:entity>
+      <xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier>
+      <xbrli:segment><xbrldi:explicitMember dimension="bus:AccountingStandardsDimension">bus:SmallEntities</xbrldi:explicitMember></xbrli:segment>
+    </xbrli:entity>
+    <xbrli:period><xbrli:startDate>2023-04-01</xbrli:startDate><xbrli:endDate>2024-03-31</xbrli:endDate></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="cur_type">
+    <xbrli:entity>
+      <xbrli:identifier scheme="http://www.companieshouse.gov.uk/">01234567</xbrli:identifier>
+      <xbrli:segment><xbrldi:explicitMember dimension="bus:AccountsTypeDimension">bus:FullAccounts</xbrldi:explicitMember></xbrli:segment>
+    </xbrli:entity>
+    <xbrli:period><xbrli:startDate>2023-04-01</xbrli:startDate><xbrli:endDate>2024-03-31</xbrli:endDate></xbrli:period>
+  </xbrli:context>
+  <xbrli:unit id="GBP"><xbrli:measure>iso4217:GBP</xbrli:measure></xbrli:unit>
+  <xbrli:unit id="pure"><xbrli:measure>xbrli:pure</xbrli:measure></xbrli:unit>
+</ix:resources>
+</ix:header>
+</div>
+
+<p>Registered number
+  <ix:nonNumeric name="bus:UKCompaniesHouseRegisteredNumber" contextRef="cur_period">01234567</ix:nonNumeric></p>
+<p>Approved by the board on
+  <ix:nonNumeric name="bus:DateAuthorisationFinancialStatementsForIssue" contextRef="cur_period" format="ixt2:datedaymonthyearen">15 December 2024</ix:nonNumeric></p>
+
+<table>
+  <tr><td>Fixed assets</td>
+    <td><ix:nonFraction name="core:FixedAssets" contextRef="cur" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">20,000</ix:nonFraction></td>
+    <td><ix:nonFraction name="core:FixedAssets" contextRef="prev" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">22,000</ix:nonFraction></td></tr>
+  <tr><td>Current assets (in thousands, scale 3)</td>
+    <td><ix:nonFraction name="core:CurrentAssets" contextRef="cur" unitRef="GBP" decimals="-3" scale="3" format="ixt2:numdotdecimal">4.5</ix:nonFraction></td>
+    <td><ix:nonFraction name="core:CurrentAssets" contextRef="prev" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">3,000</ix:nonFraction></td></tr>
+  <tr><td>Cash (zero dash)</td>
+    <td><ix:nonFraction name="core:CashBankOnHand" contextRef="cur" unitRef="GBP" decimals="0" format="ixt2:zerodash">-</ix:nonFraction></td>
+    <td><ix:nonFraction name="core:CashBankOnHand" contextRef="prev" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">750</ix:nonFraction></td></tr>
+  <tr><td>Creditors within one year</td>
+    <td><ix:nonFraction name="core:Creditors" contextRef="cur_within" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">2,000</ix:nonFraction></td>
+    <td><ix:nonFraction name="core:Creditors" contextRef="prev_within" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">1,500</ix:nonFraction></td></tr>
+  <tr><td>Net current assets</td>
+    <td><ix:nonFraction name="core:NetCurrentAssetsLiabilities" contextRef="cur" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">2,500</ix:nonFraction></td>
+    <td><ix:nonFraction name="core:NetCurrentAssetsLiabilities" contextRef="prev" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">1,500</ix:nonFraction></td></tr>
+  <tr><td>Creditors after one year</td>
+    <td><ix:nonFraction name="core:Creditors" contextRef="cur_after" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">10,000</ix:nonFraction></td>
+    <td><ix:nonFraction name="core:Creditors" contextRef="prev_noncurrent_after" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">11,000</ix:nonFraction></td></tr>
+  <tr><td>Bank loans and overdrafts due within one year (the other dimension convention)</td>
+    <td><ix:nonFraction name="core:BankBorrowingsOverdrafts" contextRef="cur_current_fi" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">900</ix:nonFraction></td></tr>
+  <tr><td>Net assets (prior year negative, shown in brackets with sign="-")</td>
+    <td><ix:nonFraction name="core:NetAssetsLiabilities" contextRef="cur" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">12,500</ix:nonFraction></td>
+    <td>(<ix:nonFraction name="core:NetAssetsLiabilities" contextRef="prev" unitRef="GBP" decimals="0" sign="-" format="ixt2:numdotdecimal">3,000</ix:nonFraction>)</td></tr>
+  <tr><td>Equity, total (repeated in the notes) and share capital (dimensioned, must be ignored)</td>
+    <td><ix:nonFraction name="core:Equity" contextRef="cur" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">12,500</ix:nonFraction></td>
+    <td><ix:nonFraction name="core:Equity" contextRef="cur" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">12,500</ix:nonFraction></td>
+    <td><ix:nonFraction name="core:Equity" contextRef="cur_share_capital" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">100</ix:nonFraction></td></tr>
+  <tr><td>Turnover</td>
+    <td><ix:nonFraction name="core:TurnoverRevenue" contextRef="cur_period" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">100,000</ix:nonFraction></td>
+    <td><ix:nonFraction name="core:TurnoverRevenue" contextRef="prev_period" unitRef="GBP" decimals="0" format="ixt2:numdotdecimal">80,000</ix:nonFraction></td></tr>
+  <tr><td>Loss for the year</td>
+    <td>(<ix:nonFraction name="core:ProfitLoss" contextRef="cur_period" unitRef="GBP" decimals="0" sign="-" format="ixt2:numdotdecimal">1,200</ix:nonFraction>)</td></tr>
+  <tr><td>Average employees</td>
+    <td><ix:nonFraction name="core:AverageNumberEmployeesDuringPeriod" contextRef="cur_period" unitRef="pure" decimals="0">3</ix:nonFraction></td>
+    <td><ix:nonFraction name="core:AverageNumberEmployeesDuringPeriod" contextRef="prev_period" unitRef="pure" decimals="0">2</ix:nonFraction></td></tr>
+</table>
+</body>
+</html>

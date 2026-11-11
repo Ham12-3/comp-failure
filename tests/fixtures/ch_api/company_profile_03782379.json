@@ -1,0 +1,74 @@
+{
+  "body": {
+    "accounts": {
+      "accounting_reference_date": {
+        "day": "31",
+        "month": "12"
+      },
+      "last_accounts": {
+        "made_up_to": "2016-12-31",
+        "period_end_on": "2016-12-31",
+        "period_start_on": "2016-01-01",
+        "type": "group"
+      },
+      "next_accounts": {
+        "due_on": "2018-06-30",
+        "overdue": true,
+        "period_end_on": "2017-12-31",
+        "period_start_on": "2017-01-01"
+      },
+      "next_due": "2018-06-30",
+      "next_made_up_to": "2017-12-31",
+      "overdue": true
+    },
+    "can_file": true,
+    "company_name": "CARILLION PLC",
+    "company_number": "03782379",
+    "company_status": "liquidation",
+    "confirmation_statement": {
+      "last_made_up_to": "2017-05-28",
+      "next_due": "2018-06-11",
+      "next_made_up_to": "2018-05-28",
+      "overdue": true
+    },
+    "date_of_creation": "1999-05-28",
+    "etag": "8a4413ebb69be71a2e4381928ee976b57bc01273",
+    "has_been_liquidated": false,
+    "has_charges": true,
+    "has_insolvency_history": true,
+    "jurisdiction": "england-wales",
+    "last_full_members_list_date": "2014-05-28",
+    "links": {
+      "charges": "/company/03782379/charges",
+      "filing_history": "/company/03782379/filing-history",
+      "insolvency": "/company/03782379/insolvency",
+      "officers": "/company/03782379/officers",
+      "self": "/company/03782379"
+    },
+    "previous_company_names": [
+      {
+        "ceased_on": "1999-06-11",
+        "effective_from": "1999-05-28",
+        "name": "CAMERON 1999 PLC"
+      }
+    ],
+    "registered_office_address": {
+      "address_line_1": "Central Square 8th Floor",
+      "address_line_2": "29 Wellington Street",
+      "locality": "Leeds",
+      "postal_code": "LS1 4DL",
+      "region": "West Yorkshire"
+    },
+    "registered_office_is_in_dispute": false,
+    "sic_codes": [
+      "41201",
+      "42110",
+      "43390",
+      "43999"
+    ],
+    "type": "plc",
+    "undeliverable_registered_office_address": false
+  },
+  "path": "/company/03782379",
+  "status": 200
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Company Failure Predictor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap">
+      <h1>UK Company Failure Predictor</h1>
+      <p class="lede">
+        The chance a UK company enters liquidation, administration or receivership within
+        12 months of its latest accounts, estimated from public Companies House data, with the
+        reasons behind it.
+      </p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="disclaimer" role="note">
+      <strong>Demonstration only, not financial or credit advice.</strong>
+      The model is trained on a small sample and is often wrong. Do not use it to make
+      decisions about a company or the people who run it.
+    </div>
+
+    <form id="search-form" class="search" autocomplete="off">
+      <label for="q">Company name or number</label>
+      <div class="search-row">
+        <input id="q" name="q" type="search" placeholder="e.g. 03782379 or a company name"
+               aria-describedby="hint" required minlength="2">
+        <button type="submit">Search</button>
+      </div>
+      <p id="hint" class="hint">Type a name to search, or enter an 8-character company number to score it.</p>
+    </form>
+
+    <ul id="results" class="results" hidden aria-label="Search results"></ul>
+    <p id="status" class="status" aria-live="polite"></p>
+
+    <article id="card" class="card" hidden>
+      <header class="card-head">
+        <div>
+          <h2 id="company-name"></h2>
+          <p id="company-meta" class="meta"></p>
+        </div>
+        <span id="band" class="band"></span>
+      </header>
+
+      <p id="message" class="message" hidden></p>
+
+      <section id="score" class="score" hidden>
+        <figure class="gauge" aria-labelledby="gauge-caption">
+          <svg viewBox="0 0 200 120" role="img" aria-hidden="true">
+            <path class="gauge-track" d="M 20 100 A 80 80 0 0 1 180 100"/>
+            <path id="gauge-fill" class="gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100"
+                  pathLength="100" stroke-dasharray="0 100"/>
+          </svg>
+          <div class="gauge-value"><span id="percentile"></span><small>percentile</small></div>
+          <figcaption id="gauge-caption" class="gauge-caption"></figcaption>
+        </figure>
+        <div class="score-text">
+          <p class="probability"><span id="probability"></span> chance of insolvency</p>
+          <p id="window" class="meta"></p>
+          <p id="relative" class="relative"></p>
+        </div>
+      </section>
+
+      <section id="reasons-block" hidden>
+        <h3>Top reasons</h3>
+        <ol id="reasons" class="reasons"></ol>
+      </section>
+
+      <ul id="warnings" class="warnings" hidden></ul>
+
+      <section>
+        <h3>Companies House records</h3>
+        <ul id="links" class="links"></ul>
+      </section>
+      <p id="model-info" class="meta small"></p>
+    </article>
+  </main>
+
+  <footer class="wrap footer">
+    <p>
+      Built on the free Companies House API and Accounts Data Product.
+      Scores describe patterns in public data, not judgements about a business.
+    </p>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>

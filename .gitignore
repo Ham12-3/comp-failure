@@ -13,6 +13,7 @@ data/**
 # Experiment tracking and model artefacts
 mlruns/
 mlartifacts/
+mlflow.db
 models/
 *.joblib
 *.pkl
@@ -39,3 +40,6 @@ htmlcov/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Local tool configuration
+.claude/
