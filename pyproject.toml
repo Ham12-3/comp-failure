@@ -1,0 +1,71 @@
+[project]
+name = "cfp"
+version = "0.1.0"
+description = "Predict the 12-month insolvency risk of UK companies from free Companies House data."
+readme = "README.md"
+authors = [{ name = "Abdulhamid Sonaike" }]
+requires-python = ">=3.12,<3.13"
+# Runtime dependencies are added phase by phase, only when code needs them.
+dependencies = [
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.13",
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "ruff>=0.8",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.14,<0.12.0"]
+build-backend = "uv_build"
+
+# ---------------------------------------------------------------- ruff
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # bugbear
+    "UP",  # pyupgrade
+    "SIM", # simplify
+    "N",   # pep8-naming
+    "PTH", # prefer pathlib
+    "DTZ", # naive datetimes are a leakage hazard: be explicit about dates
+    "RUF", # ruff-specific
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["DTZ"]
+
+# ---------------------------------------------------------------- mypy
+[tool.mypy]
+python_version = "3.12"
+files = ["src", "tests"]
+strict = true
+warn_unreachable = true
+pretty = true
+plugins = ["pydantic.mypy"]
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Tests marked `network` hit the real Companies House API. They are skipped by
+# default (and in CI); run them explicitly with `uv run pytest -m network`.
+addopts = ["-ra", "--strict-markers", "--strict-config", "-m", "not network"]
+markers = [
+    "network: test calls the real Companies House API (needs COMPANIES_HOUSE_API_KEY)",
+]
+
+[tool.coverage.run]
+source = ["cfp"]
+branch = true
